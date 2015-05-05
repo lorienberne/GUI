@@ -1,0 +1,4 @@
+function med = alphaFilter(this,sigma1,sigma2,medidas)
+  alpha = sigma2^2/(sigma1^2 + sigma1^2);
+  med   = sum([alpha (1-alpha)]*medidas;
+end
