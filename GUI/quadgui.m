@@ -234,7 +234,7 @@ handles.legendPos = {'X Real', 'Y Real', 'Z Real',...
                      'X Alpha-Beta', 'Y Alpha-Beta', 'Z Alpha-Beta',...
                      'X N Medidas', 'Y N Medidas', 'Z N Medidas'};
                  
-handles.legengAtt = {'PHI Real', 'THETA Real', 'PSI Real',...
+handles.legendAtt = {'PHI Real', 'THETA Real', 'PSI Real',...
                      'PHI Medida', 'THETA Medida', 'PSI Medida',...
                      'PHI Kalman', 'THETA Kalman', 'PSI Kalman',...
                      'PHI Alpha-Beta', 'THETA Alpha-Beta', 'PSI Alpha-Beta',...
@@ -767,11 +767,11 @@ plotPosKalFil   = [];
 plotPosAlphaFil = [];
 plotPosNMes     = [];
 
-attPosReal      = [];
-attPosMed       = [];
-attPosKalFil    = [];
-attPosAlphaFil  = [];
-attPosNMes      = [];
+plotAttReal      = [];
+plotAttMed       = [];
+plotAttKalFil    = [];
+plotAttAlphaFil  = [];
+plotAttNMes      = [];
 
 plotAttV        = [];
 plotPosV        = [];
@@ -791,7 +791,7 @@ for t = 0:handles.dt:handles.duration
   posU = posFBSignal;
 
 %GET SENSOR MEASUREMENTS
-  attMState = [q.attitSttVect(1:2)
+  attMState = [q.attitSttVect(1:2);
                magnetSensor.magMeasure(q);
                gyroSensor.gyroMeasure(q)];
   psiMState =  gpsSensor.getGPSDir(q);
@@ -852,11 +852,17 @@ plotPosMed     = [plotPosMed posMState(1:3)];
 plotPosKalFil  = [plotPosKalFil posKalState(1:3)];
 plotPosAlphaFil= [plotPosAlphaFil posState(1:3)];
 plotPosNMes    = [plotPosNMes posNFil(1:3)];
+
+plotAttReal      = [plotAttReal q.attitSttVect(1:3)];
+plotAttMed       = [plotAttMed attMState(1:3)];
+plotAttKalFil    = [plotAttKalFil attKalState(1:3)];
+plotAttAlphaFil  = [plotAttAlphaFil attState(1:3)];
+plotAttNMes      = [plotAttNMes attNFil(1:3)];
 end
 
 handles.t = 0:handles.dt:handles.duration;
 handles.plotPosData = [plotPosReal; plotPosMed; plotPosKalFil; plotPosAlphaFil; plotPosNMes];
-
+handles.plotAttData = [plotAttReal; plotAttMed; plotAttKalFil; plotAttAlphaFil; plotAttNMes];
 
 set(handles.tiempoTranscurrido,'String',strcat(strcat('Duración del Cálculo: ',num2str(toc)),' s'));
 guidata(hObject, handles);
@@ -1525,7 +1531,20 @@ function popupmenu61_Callback(hObject, eventdata, handles)
 % hObject    handle to popupmenu61 (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
+plt = (get(hObject,'Value')-1)*3 + 3;
+data = handles.plotAttData(plt,:);
+set(handles.figure1,'CurrentAxes',handles.axes7);
 
+try
+    delete(handles.p16);
+end
+
+hold(handles.axes7,'on');
+handles.p16 = plot(handles.t,data(1,:),'r','DisplayName',handles.legendAtt{plt});
+legend(handles.axes7,'-DynamicLegend');
+hold(handles.axes7,'off');
+
+guidata(hObject,handles);
 % Hints: contents = cellstr(get(hObject,'String')) returns popupmenu61 contents as cell array
 %        contents{get(hObject,'Value')} returns selected item from popupmenu61
 
@@ -1548,7 +1567,20 @@ function popupmenu62_Callback(hObject, eventdata, handles)
 % hObject    handle to popupmenu62 (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
+plt = (get(hObject,'Value')-1)*3 + 3;
+data = handles.plotAttData(plt,:);
+set(handles.figure1,'CurrentAxes',handles.axes7);
 
+try
+    delete(handles.p17);
+end
+
+hold(handles.axes7,'on');
+handles.p17 = plot(handles.t,data(1,:),'g','DisplayName',handles.legendAtt{plt});
+legend(handles.axes7,'-DynamicLegend');
+hold(handles.axes7,'off');
+
+guidata(hObject,handles);
 % Hints: contents = cellstr(get(hObject,'String')) returns popupmenu62 contents as cell array
 %        contents{get(hObject,'Value')} returns selected item from popupmenu62
 
@@ -1571,7 +1603,20 @@ function popupmenu63_Callback(hObject, eventdata, handles)
 % hObject    handle to popupmenu63 (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
+plt = (get(hObject,'Value')-1)*3 + 3;
+data = handles.plotAttData(plt,:);
+set(handles.figure1,'CurrentAxes',handles.axes7);
 
+try
+    delete(handles.p18);
+end
+
+hold(handles.axes7,'on');
+handles.p18 = plot(handles.t,data(1,:),'b','DisplayName',handles.legendAtt{plt});
+legend(handles.axes7,'-DynamicLegend');
+hold(handles.axes7,'off');
+
+guidata(hObject,handles);
 % Hints: contents = cellstr(get(hObject,'String')) returns popupmenu63 contents as cell array
 %        contents{get(hObject,'Value')} returns selected item from popupmenu63
 
@@ -1594,7 +1639,20 @@ function popupmenu58_Callback(hObject, eventdata, handles)
 % hObject    handle to popupmenu58 (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
+plt = (get(hObject,'Value')-1)*3 + 2;
+data = handles.plotAttData(plt,:);
+set(handles.figure1,'CurrentAxes',handles.axes6);
 
+try
+    delete(handles.p13);
+end
+
+hold(handles.axes6,'on');
+handles.p13 = plot(handles.t,data(1,:),'r','DisplayName',handles.legendAtt{plt});
+legend(handles.axes6,'-DynamicLegend');
+hold(handles.axes6,'off');
+
+guidata(hObject,handles);
 % Hints: contents = cellstr(get(hObject,'String')) returns popupmenu58 contents as cell array
 %        contents{get(hObject,'Value')} returns selected item from popupmenu58
 
@@ -1617,7 +1675,20 @@ function popupmenu59_Callback(hObject, eventdata, handles)
 % hObject    handle to popupmenu59 (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
+plt = (get(hObject,'Value')-1)*3 + 2;
+data = handles.plotAttData(plt,:);
+set(handles.figure1,'CurrentAxes',handles.axes6);
 
+try
+    delete(handles.p14);
+end
+
+hold(handles.axes6,'on');
+handles.p14 = plot(handles.t,data(1,:),'g','DisplayName',handles.legendAtt{plt});
+legend(handles.axes6,'-DynamicLegend');
+hold(handles.axes6,'off');
+
+guidata(hObject,handles);
 % Hints: contents = cellstr(get(hObject,'String')) returns popupmenu59 contents as cell array
 %        contents{get(hObject,'Value')} returns selected item from popupmenu59
 
@@ -1640,7 +1711,20 @@ function popupmenu60_Callback(hObject, eventdata, handles)
 % hObject    handle to popupmenu60 (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
+plt = (get(hObject,'Value')-1)*3 + 2;
+data = handles.plotAttData(plt,:);
+set(handles.figure1,'CurrentAxes',handles.axes6);
 
+try
+    delete(handles.p15);
+end
+
+hold(handles.axes6,'on');
+handles.p15 = plot(handles.t,data(1,:),'b','DisplayName',handles.legendAtt{plt});
+legend(handles.axes6,'-DynamicLegend');
+hold(handles.axes6,'off');
+
+guidata(hObject,handles);
 % Hints: contents = cellstr(get(hObject,'String')) returns popupmenu60 contents as cell array
 %        contents{get(hObject,'Value')} returns selected item from popupmenu60
 
@@ -1663,7 +1747,20 @@ function popupmenu55_Callback(hObject, eventdata, handles)
 % hObject    handle to popupmenu55 (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
+plt = (get(hObject,'Value')-1)*3 + 1;
+data = handles.plotAttData(plt,:);
+set(handles.figure1,'CurrentAxes',handles.axes5);
 
+try
+    delete(handles.p10);
+end
+
+hold(handles.axes5,'on');
+handles.p10 = plot(handles.t,data(1,:),'r','DisplayName',handles.legendAtt{plt});
+legend(handles.axes5,'-DynamicLegend');
+hold(handles.axes5,'off');
+
+guidata(hObject,handles);
 % Hints: contents = cellstr(get(hObject,'String')) returns popupmenu55 contents as cell array
 %        contents{get(hObject,'Value')} returns selected item from popupmenu55
 
@@ -1686,7 +1783,20 @@ function popupmenu56_Callback(hObject, eventdata, handles)
 % hObject    handle to popupmenu56 (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
+plt = (get(hObject,'Value')-1)*3 + 1;
+data = handles.plotAttData(plt,:);
+set(handles.figure1,'CurrentAxes',handles.axes5);
 
+try
+    delete(handles.p11);
+end
+
+hold(handles.axes5,'on');
+handles.p11 = plot(handles.t,data(1,:),'g','DisplayName',handles.legendAtt{plt});
+legend(handles.axes5,'-DynamicLegend');
+hold(handles.axes5,'off');
+
+guidata(hObject,handles);
 % Hints: contents = cellstr(get(hObject,'String')) returns popupmenu56 contents as cell array
 %        contents{get(hObject,'Value')} returns selected item from popupmenu56
 
@@ -1709,7 +1819,20 @@ function popupmenu57_Callback(hObject, eventdata, handles)
 % hObject    handle to popupmenu57 (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
+plt = (get(hObject,'Value')-1)*3 + 1;
+data = handles.plotAttData(plt,:);
+set(handles.figure1,'CurrentAxes',handles.axes5);
 
+try
+    delete(handles.p12);
+end
+
+hold(handles.axes5,'on');
+handles.p12 = plot(handles.t,data(1,:),'b','DisplayName',handles.legendAtt{plt});
+legend(handles.axes5,'-DynamicLegend');
+hold(handles.axes5,'off');
+
+guidata(hObject,handles);
 % Hints: contents = cellstr(get(hObject,'String')) returns popupmenu57 contents as cell array
 %        contents{get(hObject,'Value')} returns selected item from popupmenu57
 

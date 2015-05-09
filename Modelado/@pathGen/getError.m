@@ -1,0 +1,2 @@
+function error = getError()
+end
