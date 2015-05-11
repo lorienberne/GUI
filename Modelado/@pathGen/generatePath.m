@@ -20,27 +20,21 @@ for dim = 1:3
         A(i + 2*numPoints,((i-1)*4+1)) = -3;
         A(i + 2*numPoints,((i-1)*4+2)) = -2;
         A(i + 2*numPoints,((i-1)*4+3)) = -1;
-        if (~(i == numPoints))
-            A(i + 2*numPoints,((i-1)*4+7)) =  1;
-        else
-            A(i + 2*numPoints,3) =  1;
-        end
-
-
-
+        
+        
         A(i + 3*numPoints,((i-1)*4+1)) = -6;
         A(i + 3*numPoints,((i-1)*4+2)) = -2;
-        if (~(i == numPoints))
-            A(i + 3*numPoints,((i-1)*4+6)) =  2;
-        else
-            A(i + 3*numPoints,2) =  2;
-        end
-
-
+        
         B(i,1) = points(i,dim);
+
+        
         if (~(i == numPoints))
+            A(i + 2*numPoints,((i-1)*4+7)) =  1;
+            A(i + 3*numPoints,((i-1)*4+6)) =  2;
             B(i + numPoints,1) = points(i+1,dim);
         else
+            A(i + 2*numPoints,3) =  1;
+            A(i + 3*numPoints,2) =  2;
             B(i + numPoints,1) = points(1,dim);    
         end
         

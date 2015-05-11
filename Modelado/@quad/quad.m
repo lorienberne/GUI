@@ -44,6 +44,7 @@ classdef quad
         %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
         dt;      %THE DURATION IN SECONDS OF EACH TIMESTEP
+        qplot;
     end
 
     methods
@@ -60,6 +61,7 @@ classdef quad
             this.rotorIz = rotorIz;
             this.kProp   = kProp;
             this.dt      = dt;
+            
         end
 
         phiOmegaPsi = pqr2phiOmegaPsiPto(pqr,pOp);
@@ -68,7 +70,7 @@ classdef quad
         this = simQuad(this);
 
         %DRAWS THE QUAD IN PLOT FIGURE
-        drawQuad(this, axScale, ax, fig);
+        this = drawQuad(this, axScale, ax, fig);
 
         %GETTERS
         rotOmega = getRotorOmega(this);
