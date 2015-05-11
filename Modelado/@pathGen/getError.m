@@ -1,2 +1,3 @@
-function error = getError()
+function error = getError(currPos)
+  
 end

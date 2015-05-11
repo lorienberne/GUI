@@ -5,7 +5,7 @@ classdef pathGen
   methods
     function this = pathGen()
     end
-    generatePath(this,points);
+    this = generatePath(this,points);
     error = getError(position);
   end
 end
