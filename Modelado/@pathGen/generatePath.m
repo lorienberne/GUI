@@ -1,8 +1,8 @@
-function this = generatePath(this,points)
+function this = generatePath(this,points,type)
 % Generate a cubic sline from the given points
 % Returns the coefficients corresponding to the following expression
 % A*t^3 + B*t^2 + C*t + D;
-
+this.points = points;
 numPoints = length(points);
 unknowns = numPoints*4;
 coefs = zeros(3,unknowns);
@@ -31,11 +31,17 @@ for dim = 1:3
         if (~(i == numPoints))
             A(i + 2*numPoints,((i-1)*4+7)) =  1;
             A(i + 3*numPoints,((i-1)*4+6)) =  2;
-            B(i + numPoints,1) = points(i+1,dim);
+            if(strcmp(type(i),'Fly-Over'))
+                B(i + numPoints,1) = points(i+1,dim);
+            else
+            end
         else
             A(i + 2*numPoints,3) =  1;
             A(i + 3*numPoints,2) =  2;
-            B(i + numPoints,1) = points(1,dim);    
+            if(strcmp(type(i),'Fly-Over'))
+                B(i + numPoints,1) = points(1,dim);    
+            else
+            end
         end
         
     end
@@ -43,7 +49,5 @@ for dim = 1:3
     coefs(dim,:) = linsolve(A,B)';
     this.coefs = coefs;
 end
-
-
 
 end

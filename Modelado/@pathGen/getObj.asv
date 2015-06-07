@@ -1,0 +1,20 @@
+function [obj,this] = getObj(this,currPos,speed)
+    if(norm(this.currPoint - currPos)<0.2)
+        this.currPoint = this.
+    end
+    syms t;
+    
+	x = 3*this.coefs(1,1)*t^2 + 2*this.coefs(1,2)*t + this.coefs(1,3);
+	y = 3*this.coefs(2,1)*t^2 + 2*this.coefs(2,2)*t + this.coefs(2,3);
+	z = 3*this.coefs(3,1)*t^2 + 2*this.coefs(3,2)*t + this.coefs(3,3);
+    tg = [x;y;z]/norm([x;y;z]);
+    
+    xc = this.coefs(1,1)*t^3 + this.coefs(1,2)*t^2 + this.coefs(1,3)*t + this.coefs(1,4);
+    yc = this.coefs(2,1)*t^3 + this.coefs(2,2)*t^2 + this.coefs(2,3)*t + this.coefs(2,4);
+    zc = this.coefs(3,1)*t^3 + this.coefs(3,2)*t^2 + this.coefs(3,3)*t + this.coefs(3,4);
+
+    sol = vpasolve([currPos(1)-xc,currPos(2)-yc,currPos(3)-zc]*tg == 0);
+    
+    speedVect = speed*subs(tg,sol);
+    obj = double([subs(xc,sol);subs(yc,sol);subs(zc,sol);speedVect]);
+end

@@ -10,4 +10,4 @@ function plotPath(this, fig, axes)
         plot3(x,y,z);
     end
     
-end
+end 

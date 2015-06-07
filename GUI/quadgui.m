@@ -22,7 +22,7 @@ function varargout = quadgui(varargin)
 
 % Edit the above text to modify the response to help quadgui
 
-% Last Modified by GUIDE v2.5 11-May-2015 05:40:30
+% Last Modified by GUIDE v2.5 11-May-2015 06:45:38
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -72,10 +72,10 @@ handles.dt = 0.01;
 % GPSPosCov   = 1;
 % GPSSpeedCov = 0.1;
 
-handles.MCov        = 0.0001;
-handles.ACov        = 0.0001;
-handles.GCov        = 0.0001;
-handles.GPSPosCov   = 1;
+handles.MCov        = 0.1;
+handles.ACov        = 0.1;
+handles.GCov        = 0.1;
+handles.GPSPosCov   = 2;
 handles.GPSSpeedCov = 0.1;
 handles.GPSDirCov   = 0.001;
 handles.BCov        = 0.1;
@@ -188,7 +188,7 @@ handles.zD = zeros(2,1);
 %% QUAD OBJECT PARAMETERS %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 % HALF DISTANCE BETWEEN EACH PAIR OF PROPELLER'S AXES
-handles.l = 0.1;
+handles.l = 0.1; 
 
 % MASS OF THE QUADCOPTER
 handles.m = 1.05;
@@ -210,7 +210,7 @@ handles.kProp = [0.000009958, 0.0000009315];
 
 
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%% INITIAL CONDITIONS %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -756,11 +756,13 @@ pathGenerator   = pathGen();
 %%% SIMULATION LOOP %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 wayPoints = get(handles.uitable2,'data');
-pathGenerator = pathGenerator.generatePath(cell2mat(wayPoints(1:4,1:3)));
+pathGenerator = pathGenerator.generatePath(cell2mat(wayPoints(:,1:3)),wayPoints(:,5));
 
 pathGenerator.plotPath(handles.figure1,handles.axes1);
-posDesState = [cell2mat(wayPoints(1,1)); cell2mat(wayPoints(1,2)); cell2mat(wayPoints(1,2)); 0; 0; 0];
+%posDesState = [cell2mat(wayPoints(1,1)); cell2mat(wayPoints(1,2)); cell2mat(wayPoints(1,3)); 0; 0; 0];
 posFBSignal = [0; 0; 0; 0];
+
+
 
 % VARIABLES TO SAVE INFORMATION FOR LATER PLOTS
 plotPosReal     = [];
@@ -782,7 +784,8 @@ plotPosSignal   = [];
 plotAttSignal   = [];
 
 handles.duration = get(handles.sliderTiempo,'Value')*30;
-
+flag = 1;
+counter = 0;
 for t = 0:handles.dt:handles.duration
 %GET INPUT
   rotorOmega = q.getRotorOmega();
@@ -836,6 +839,15 @@ for t = 0:handles.dt:handles.duration
  posNFil = posNmedFilter.getNMes();
 
 %GET CONTROL SIGNAL AND SET PROPS TO THAT SPEED
+if(flag == 1)
+  [posDesState,pathGenerator] = pathGenerator.getObj(posNFil(1:3),1);
+  flag = 0;
+end
+counter = counter + 1;
+if(counter == 10)
+    flag = 1;
+    counter = 0;
+end
   posFBSignal = posfback.getControlSignal(posNFil, posDesState);
   attFBSignal = attfback.getControlSignal(attNFil,[posFBSignal(2:4,1); 0; 0; 0]);
   q = q.setPropSpeed(attFBSignal,posFBSignal(1,1));
@@ -844,7 +856,7 @@ for t = 0:handles.dt:handles.duration
   q = q.simQuad();
 %PLOT THE RESULT
 if(handles.checkbox1.Value)
-  q = q.drawQuad(max(abs(posDesState)) + 2,handles.axes1, handles.figure1);
+  q = q.drawQuad(max(max(abs(cell2mat(wayPoints(:,1:3))))) + 2,handles.axes1, handles.figure1);
   pause(handles.dt);
 end
 
@@ -2239,6 +2251,3 @@ function uitable2_CellEditCallback(hObject, eventdata, handles)
 %	NewData: EditData or its converted form set on the Data property. Empty if Data was not changed
 %	Error: error string when failed to convert EditData to appropriate value for Data
 % handles    structure with handles and user data (see GUIDATA)
-
-
-
